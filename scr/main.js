@@ -10,22 +10,31 @@ const c = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-const playerX = canvas.width / 2;
-const playerY = canvas.height / 2;
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
 
-const player = new Player(playerX, playerY, 30, "blue");
+const player = new Player(centerX, centerY, 30, "blue");
 
-console.log("player ", player);
+const projectiles = [];
 
-player.draw(c);
+function animate() {
+  requestAnimationFrame(animate);
+  c.clearRect(0, 0, canvas.width, canvas.height);
+  player.draw(c);
+  projectiles.forEach((projectile) => {
+    projectile.update(c);
+  });
+}
 
 addEventListener("click", (event) => {
-  const projectile = new Projectile(
-    event.offsetX,
-    event.offsetY,
-    5,
-    "red",
-    null
-  );
-  projectile.draw(c);
+  const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
+
+  const velocity = {
+    x: Math.cos(angle),
+    y: Math.sin(angle),
+  };
+  const projectile = new Projectile(centerX, centerY, 5, "red", velocity);
+  projectiles.push(projectile);
 });
+
+animate();
