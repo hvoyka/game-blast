@@ -17,9 +17,11 @@ const centerY = canvas.height / 2;
 const player = new Player(centerX, centerY, 30, "blue");
 const projectiles = [];
 const enemies = [];
+let animationId;
+let enemyIntervalId;
 
 function spawnEnemies() {
-  setInterval(() => {
+  enemyIntervalId = setInterval(() => {
     const radius = Math.random() * (30 - 4) + 4;
     let x, y;
     if (Math.random() > 0.5) {
@@ -45,7 +47,7 @@ function spawnEnemies() {
 }
 
 function animate() {
-  requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
   player.draw(c);
 
@@ -55,14 +57,26 @@ function animate() {
 
   enemies.forEach((enemy, enemyIndex) => {
     enemy.update(c);
+    const distanceBetweenEnemyAndPlayer = Math.hypot(
+      player.x - enemy.x,
+      player.y - enemy.y
+    );
+
+    if (distanceBetweenEnemyAndPlayer - enemy.radius - player.radius < 1) {
+      console.log("game over");
+      cancelAnimationFrame(animationId);
+      clearInterval(enemyIntervalId);
+    }
 
     projectiles.forEach((projectile, projectileIndex) => {
-      const distance = Math.hypot(
+      const distanceBetweenProjectileAndEnemy = Math.hypot(
         projectile.x - enemy.x,
         projectile.y - enemy.y
       );
-      if (distance - enemy.radius - projectile.radius < 1) {
-        console.log("remove", distance);
+      if (
+        distanceBetweenProjectileAndEnemy - enemy.radius - projectile.radius <
+        1
+      ) {
         setTimeout(() => {
           enemies.splice(enemyIndex, 1);
           projectiles.splice(projectileIndex, 1);
