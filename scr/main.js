@@ -24,6 +24,7 @@ function spawnEnemies() {
   enemyIntervalId = setInterval(() => {
     const radius = Math.random() * (30 - 4) + 4;
     let x, y;
+
     if (Math.random() > 0.5) {
       x = Math.random() > 0.5 ? 0 - radius : canvas.width + radius;
       y = Math.random() * canvas.height;
@@ -33,16 +34,13 @@ function spawnEnemies() {
     }
 
     const color = "green";
-
     const angle = Math.atan2(centerY - y, centerX - x);
-
     const velocity = {
       x: Math.cos(angle),
       y: Math.sin(angle),
     };
 
     enemies.push(new Enemy(x, y, radius, color, velocity));
-    console.log(enemies);
   }, [1000]);
 }
 
@@ -51,8 +49,19 @@ function animate() {
   c.clearRect(0, 0, canvas.width, canvas.height);
   player.draw(c);
 
-  projectiles.forEach((projectile) => {
+  projectiles.forEach((projectile, index) => {
     projectile.update(c);
+
+    if (
+      projectile.x + projectile.radius < 0 ||
+      projectile.x - projectile.radius > canvas.width ||
+      projectile.y + projectile.radius < 0 ||
+      projectile.y - projectile.radius > canvas.width
+    ) {
+      setTimeout(() => {
+        projectiles.splice(index, 1);
+      }, 0);
+    }
   });
 
   enemies.forEach((enemy, enemyIndex) => {
@@ -88,7 +97,6 @@ function animate() {
 
 addEventListener("click", (event) => {
   const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
-
   const velocity = {
     x: Math.cos(angle),
     y: Math.sin(angle),
