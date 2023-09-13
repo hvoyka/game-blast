@@ -6,6 +6,7 @@ import { Projectile } from "./classes/Projectile";
 import { Enemy } from "./classes/Enemy";
 
 import { gsap } from "gsap";
+import { Particle } from "./classes/Particle";
 
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
@@ -19,6 +20,7 @@ const centerY = canvas.height / 2;
 const player = new Player(centerX, centerY, 10, "white");
 const projectiles = [];
 const enemies = [];
+const particles = [];
 let animationId;
 let enemyIntervalId;
 
@@ -51,6 +53,14 @@ function animate() {
   c.fillStyle = "rgba(0, 0, 0, 0.1)";
   c.fillRect(0, 0, canvas.width, canvas.height);
   player.draw(c);
+
+  particles.forEach((particle, index) => {
+    if (particle.alpha <= 0) {
+      particles.splice(index, 1);
+    } else {
+      particle.update(c);
+    }
+  });
 
   projectiles.forEach((projectile, index) => {
     projectile.update(c);
@@ -89,6 +99,21 @@ function animate() {
         distanceBetweenProjectileAndEnemy - enemy.radius - projectile.radius <
         1
       ) {
+        for (let i = 0; i < enemy.radius * 2; i++) {
+          particles.push(
+            new Particle(
+              projectile.x,
+              projectile.y,
+              Math.random() * 2,
+              enemy.color,
+              {
+                x: (Math.random() - 0.5) * (Math.random() * 6),
+                y: (Math.random() - 0.5) * (Math.random() * 6),
+              }
+            )
+          );
+        }
+
         if (enemy.radius - 10 > 5) {
           gsap.to(enemy, { radius: enemy.radius - 10 });
 
