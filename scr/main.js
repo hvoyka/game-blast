@@ -1,5 +1,3 @@
-import "./assets/style.css";
-
 import { config } from "./config.js";
 import { Player } from "./classes/Player";
 import { Projectile } from "./classes/Projectile";
@@ -9,6 +7,7 @@ import { gsap } from "gsap";
 import { Particle } from "./classes/Particle";
 
 const canvas = document.querySelector("canvas");
+const scoreEl = document.querySelector("#score");
 const c = canvas.getContext("2d");
 
 canvas.width = innerWidth;
@@ -23,6 +22,7 @@ const enemies = [];
 const particles = [];
 let animationId;
 let enemyIntervalId;
+let score = 0;
 
 function spawnEnemies() {
   enemyIntervalId = setInterval(() => {
@@ -115,17 +115,21 @@ function animate() {
         }
 
         if (enemy.radius - 10 > 5) {
+          score += 100;
+
           gsap.to(enemy, { radius: enemy.radius - 10 });
 
           setTimeout(() => {
             projectiles.splice(projectileIndex, 1);
           }, 0);
         } else {
+          score += 250;
           setTimeout(() => {
             enemies.splice(enemyIndex, 1);
             projectiles.splice(projectileIndex, 1);
           }, 0);
         }
+        scoreEl.textContent = score;
       }
     });
   });
