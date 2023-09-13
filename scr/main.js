@@ -8,6 +8,9 @@ import { Particle } from "./classes/Particle";
 
 const canvas = document.querySelector("canvas");
 const scoreEl = document.querySelector("#score");
+const endGameScoreEl = document.querySelector("#end-game-score");
+const startGameBtn = document.querySelector("#start-game");
+const modal = document.querySelector("#modal");
 const c = canvas.getContext("2d");
 
 canvas.width = innerWidth;
@@ -16,13 +19,27 @@ canvas.height = innerHeight;
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
-const player = new Player(centerX, centerY, 10, "white");
-const projectiles = [];
-const enemies = [];
-const particles = [];
+let player;
+let projectiles;
+let enemies;
+let particles;
 let animationId;
 let enemyIntervalId;
-let score = 0;
+let score;
+
+function init() {
+  player = new Player(centerX, centerY, 10, "white");
+  projectiles = [];
+  enemies = [];
+  particles = [];
+  animationId;
+  enemyIntervalId;
+  score = 0;
+
+  modal.style.display = "none";
+  endGameScoreEl.textContent = score;
+  scoreEl.textContent = score;
+}
 
 function spawnEnemies() {
   enemyIntervalId = setInterval(() => {
@@ -88,6 +105,9 @@ function animate() {
       console.log("game over");
       cancelAnimationFrame(animationId);
       clearInterval(enemyIntervalId);
+
+      endGameScoreEl.textContent = score;
+      modal.style.display = "flex";
     }
 
     projectiles.forEach((projectile, projectileIndex) => {
@@ -146,5 +166,8 @@ addEventListener("click", (event) => {
   projectiles.push(projectile);
 });
 
-animate();
-spawnEnemies();
+startGameBtn.addEventListener("click", () => {
+  init();
+  animate();
+  spawnEnemies();
+});

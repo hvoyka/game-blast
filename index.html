@@ -11,6 +11,21 @@
     <div class="fixed text-white text-sm ml-2 mt-1 select-none">
       <span>Score: </span><span id="score">0</span>
     </div>
+
+    <div id="modal" class="fixed inset-0 flex items-center justify-center">
+      <div class="bg-white max-w-md w-full p-6 text-center">
+        <h1 id="end-game-score" class="text-4xl font-bold leading-none">0</h1>
+        <p class="text-sm text-gray-700 mb-4">Points</p>
+        <div>
+          <button
+            id="start-game"
+            class="bg-blue-500 text-white w-full py-3 rounded-full text-sm"
+          >
+            Start game
+          </button>
+        </div>
+      </div>
+    </div>
     <canvas></canvas>
     <script type="module" src="/scr/main.js"></script>
   </body>
